@@ -1,0 +1,23 @@
+# Java: only Main.java is hand-written; all other .java files are ANTLR-generated
+*.java
+!Main.java
+
+# ANTLR metadata
+*.interp
+*.tokens
+
+# Java build output
+*.class
+out/
+bin/
+
+# Tooling (downloaded, not committed)
+antlr-4.13.2-complete.jar
+
+# Java build output
+*.class
+out/
+bin/
+
+# Tooling (downloaded, not committed)
+antlr-4.13.2-complete.jar
