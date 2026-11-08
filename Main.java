@@ -2,6 +2,8 @@ package edu.compiler.lexer;
 
 import org.antlr.v4.runtime.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -9,31 +11,48 @@ public class Main {
             System.err.println("Usage: java edu.compiler.lexer.Main <file.js>");
             return;
         }
+        
         CharStream input = CharStreams.fromFileName(args[0], StandardCharsets.UTF_8);
         JavaScriptLexer lexer = new JavaScriptLexer(input);
         lexer.removeErrorListeners();
 
-        int errorCount = 0;
-        System.out.println("--- Tokens Found ---");
+        // List to store errors and print them at the end
+        List<String> errors = new ArrayList<>();
+        
+        // Exact header format requested
+        System.out.println("---Tokens Found---");
+        
         Token token;
         while ((token = lexer.nextToken()).getType() != Token.EOF) {
             if (token.getChannel() != Token.DEFAULT_CHANNEL) continue;
+            
             String type = lexer.getVocabulary().getSymbolicName(token.getType());
             if (type == null) type = "TOKEN_" + token.getType();
+            
             String text = token.getText()
                     .replace("\r", "\\r").replace("\n", "\\n").replace("\t", "\\t");
 
-            String error = getErrorMessage(type, text);
-            if (error != null) {
-                errorCount++;
-                System.out.println("Error at " + token.getLine() + ":"
-                        + token.getCharPositionInLine() + " " + error);
+            String errorMsg = getErrorMessage(type, text);
+            
+            if (errorMsg != null) {
+                // DO NOT PRINT YET. Just add to the list.
+                errors.add("Error at " + token.getLine() + ":" 
+                         + token.getCharPositionInLine() + " " + errorMsg);
                 continue;
             }
-            System.out.println("Text:[" + text + "]-> Type: " + type
-                    + " (" + token.getLine() + ":" + token.getCharPositionInLine() + ")");
+            
+            // Print valid tokens immediately
+            System.out.println("Text:[" + text + "]-> Type: " + type 
+                             + " (" + token.getLine() + ":" + token.getCharPositionInLine() + ")");
         }
-        System.out.println("--- Lexical Errors: " + errorCount + " ---");
+        
+        // Exact footer format requested
+        System.out.println("----Lexical Errors : " + errors.size() + " -----");
+        
+        // Print all collected errors at the very end
+        for (String err : errors) {
+            System.out.println(err);
+        }
     }
 
     private static String getErrorMessage(String type, String text) {

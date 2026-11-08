@@ -97,9 +97,14 @@ defined in `JavaScriptLexer.g4`.
 Run the analyzer on each bundled test file:
 
 ```bash
-java -cp ".;antlr-4.13.2-complete.jar" Main test.js
-java -cp ".;antlr-4.13.2-complete.jar" Main special.js
-java -cp ".;antlr-4.13.2-complete.jar" Main error.js
+# Test valid code
+java -cp ".;antlr-4.13.2-complete.jar" edu.compiler.lexer.Main test.js
+
+# Test special cases
+java -cp ".;antlr-4.13.2-complete.jar" edu.compiler.lexer.Main special.js
+
+# Test lexical errors
+java -cp ".;antlr-4.13.2-complete.jar" edu.compiler.lexer.Main error.js
 ```
 
 | File | What it proves | Expected result |
